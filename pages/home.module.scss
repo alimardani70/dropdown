@@ -1,0 +1,15 @@
+$menuItemsZIndex: 10;
+
+.home{
+  padding: 30px;
+  .boxItem{
+    position: relative;
+    z-index: $menuItemsZIndex;
+    &:focus-within ,  {
+      z-index: $menuItemsZIndex+1;
+    }
+    h2{
+      padding: 10px 0;
+    }
+  }
+}

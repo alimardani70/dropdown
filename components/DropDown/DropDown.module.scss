@@ -1,0 +1,99 @@
+@import '/styles/variables';
+
+
+.menuItems {
+  max-width: 300px;
+  position: relative;
+  z-index: $menuItemsZIndex;
+  &:focus-within {
+    z-index: $menuItemsZIndex+1;
+  }
+  .inputSection{
+    padding: 5px;
+    border-radius: $radius ;
+    border: 2px solid map-get($blueColor, 200);
+    width:100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: start;
+    align-content: stretch;
+    &:focus-within {
+      box-shadow: 0 0 0 3px map-get($blueColor, 100); // Example box-shadow, customize as needed
+    }
+    input{
+      flex-grow: 1;
+      border: none;
+      &:focus{
+        outline: none;
+      }
+    }
+    .chipItem{
+      flex-grow: 1;
+      text-align: center;
+      border-radius: 2*$radius;
+      border: 1px solid map-get($grayColor, 100);
+      background-color: map-get($grayColor, 50);
+      padding: 5px;
+    }
+  }
+  ul{
+    display: none;
+    border-radius: $radius;
+    border-color: map-get($grayColor, 100);
+    border-style: solid;
+    border-width: 1px;
+    list-style-type: none;
+    width: 100%;
+    position: absolute;
+    z-index: 100;
+    top: calc( 100% + 8px );
+    left: 0;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: scroll;
+    background: #FFF;
+    &:focus-within {
+      display: block;
+    }
+    li{
+      padding: 5px;
+      .row{
+        border-radius: $radius;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &:hover {
+          background-color: map-get($grayColor, 100);
+          cursor: pointer;
+        }
+        .item{
+          display: flex;
+          gap: 8px;
+          flex-direction: row;
+          align-items: center;
+        }
+        .selectedRow{
+          display: none;
+        }
+      }
+    }
+  }
+  .showDropdown {
+    display: block;
+  }
+  .selectedItem {
+    .row{
+      background-color: map-get($blueColor, 100);
+      color: map-get($blueColor, 200);
+      &:hover {
+        background-color: map-get($blueColor, 200);
+        color: map-get($blueColor, 50);
+      }
+      .selectedRow{
+        display: block;
+      }
+    }
+  }
+}
