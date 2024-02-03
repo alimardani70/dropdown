@@ -4,6 +4,7 @@ import styles from "./DropDown.module.scss";
 import { generateRandomId } from "@/helper/generateId";
 import isFunction from "lodash.isfunction";
 import useHotKeys from "../../hooks/useHotKey";
+import clsx from "clsx";
 
 export type ListItem = {
   id: string;
@@ -142,7 +143,7 @@ const DropDown: React.FC<DropdownProps> = ({
         </div>
       </div>
       <ul
-        className={dropdownVisible ? styles.showDropdown : ""}
+        className={clsx({ [styles.showDropdown]: dropdownVisible })}
         onBlur={closeDropDown}
         tabIndex={0}
       >
