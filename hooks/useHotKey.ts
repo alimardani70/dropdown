@@ -7,8 +7,6 @@ type HotKeyMap = {
 const useHotKeys = (hotKeyMaps: HotKeyMap[]) => {
   const keyDownHandler = useCallback(
     (insertedKey: string) => {
-      console.log("hotKeyMap", insertedKey);
-
       const hotKeyMap = hotKeyMaps.find(
         (hotKey) => hotKey.targetKey === insertedKey,
       );

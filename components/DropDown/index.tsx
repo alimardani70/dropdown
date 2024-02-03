@@ -88,7 +88,6 @@ const DropDown: React.FC<DropdownProps> = ({
     }
   };
   const removeItems = () => {
-    console.log("-------");
     setSelectedItems([]);
     closeExitInput();
   };
