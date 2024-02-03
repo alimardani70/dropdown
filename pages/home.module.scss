@@ -1,8 +1,14 @@
-$menuItemsZIndex: 10;
+@import '/styles/variables';
+
 
 .home{
   padding: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-family: $fontFamily;
   .boxItem{
+    min-width: 350px;
     position: relative;
     z-index: $menuItemsZIndex;
     &:focus-within ,  {

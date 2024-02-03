@@ -3,6 +3,7 @@ import Input from "@/components//Input";
 import styles from "./DropDown.module.scss";
 import { generateRandomId } from "@/helper/generateId";
 import isFunction from "lodash.isfunction";
+import useHotKeys from "../../hooks/useHotKey";
 
 export type ListItem = {
   id: string;
@@ -27,6 +28,7 @@ const DropDown: React.FC<DropdownProps> = ({
   const [filteredItems, setFilteredItems] = useState<ListItem[]>(totalItems);
   const [selectedItems, setSelectedItems] = useState<ListItem[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const changeHandler = (value: string) => {
     setInputValue(value);
@@ -36,25 +38,40 @@ const DropDown: React.FC<DropdownProps> = ({
     setDropdownVisible(false);
   };
 
-  const keyDownHandler = (key: string) => {
-    if (key === "Enter") {
-      const id = generateRandomId(6);
-      const newItem = { id, title: inputValue };
-      setTotalItems([newItem, ...totalItems]);
-      if (multiSelect) {
-        setSelectedItems([...selectedItems, newItem]);
-      } else {
-        setSelectedItems([newItem]);
-      }
-      setInputValue("");
+  const addNewToList = () => {
+    const id = generateRandomId(6);
+    const newItem = { id, title: inputValue };
+    setTotalItems([newItem, ...totalItems]);
+    if (multiSelect) {
+      setSelectedItems([...selectedItems, newItem]);
+    } else {
+      setSelectedItems([newItem]);
+    }
+    setInputValue("");
+  };
+  const closeExitInput = () => {
+    setDropdownVisible(false);
+    if (inputRef.current) {
+      inputRef.current.blur();
     }
   };
+  const removeLastItem = () => {
+    setSelectedItems((prevArray) => prevArray.slice(0, -1));
+  };
+  const hotKeyActions = [
+    { targetKey: "Enter", action: addNewToList },
+    {
+      targetKey: "Escape",
+      action: closeExitInput,
+    },
+    { targetKey: "Backspace", action: removeLastItem },
+  ];
+  const keyDownHandler = useHotKeys(hotKeyActions);
 
   const handleItemClick = (clickedItem: ListItem) => {
     const isAlreadySelected = selectedItems.some(
       (item) => item.id === clickedItem.id,
     );
-
     if (multiSelect) {
       let updatedSelectedItems;
       if (isAlreadySelected) {
@@ -69,6 +86,11 @@ const DropDown: React.FC<DropdownProps> = ({
     } else {
       setSelectedItems([clickedItem]);
     }
+  };
+  const removeItems = () => {
+    console.log("-------");
+    setSelectedItems([]);
+    closeExitInput();
   };
 
   useEffect(() => {
@@ -87,11 +109,7 @@ const DropDown: React.FC<DropdownProps> = ({
         setDropdownVisible(false);
       }
     };
-
-    // Add event listener for outside clicks
     document.addEventListener("mousedown", handleCloseMenu);
-
-    // Remove event listener on cleanup
     return () => document.removeEventListener("mousedown", handleCloseMenu);
   }, []);
 
@@ -109,37 +127,51 @@ const DropDown: React.FC<DropdownProps> = ({
             {item.title}
           </span>
         ))}
-        <Input
-          value={inputValue}
-          onFocus={() => setDropdownVisible(true)}
-          onChange={changeHandler}
-          onKeyDown={keyDownHandler}
-        />
+        <div className={styles.flexInput}>
+          <Input
+            value={inputValue}
+            onFocus={() => setDropdownVisible(true)}
+            onChange={changeHandler}
+            onKeyDown={keyDownHandler}
+            ref={inputRef}
+          />
+          {selectedItems.length > 0 && (
+            <button className={styles.button} onClick={removeItems}>
+              &#10005;
+            </button>
+          )}
+        </div>
       </div>
       <ul
         className={dropdownVisible ? styles.showDropdown : ""}
         onBlur={closeDropDown}
         tabIndex={0}
       >
-        {filteredItems.map((item, index) => (
-          <li
-            key={item.id}
-            onClick={() => handleItemClick(item)}
-            className={
-              selectedItems.some((selected) => selected.id === item.id)
-                ? styles.selectedItem
-                : ""
-            }
-          >
-            <div className={styles.row}>
-              <div className={styles.item}>
-                {item.title}
-                {item.Icon && <span>{item.Icon}</span>}
+        {filteredItems?.length > 0 ? (
+          filteredItems.map((item, index) => (
+            <li
+              key={item.id}
+              onClick={() => handleItemClick(item)}
+              className={
+                selectedItems.some((selected) => selected.id === item.id)
+                  ? styles.selectedItem
+                  : ""
+              }
+            >
+              <div className={styles.row}>
+                <div className={styles.item}>
+                  {item.title}
+                  {!!item.Icon && <span>{item.Icon}</span>}
+                </div>
+                <div className={styles.selectedRow}>&#10004;</div>
               </div>
-              <div className={styles.selectedRow}>&#10004;</div>
-            </div>
-          </li>
-        ))}
+            </li>
+          ))
+        ) : (
+          <span className={styles.noResult}>
+            -- No result found. Press Enter to add your custom entry.
+          </span>
+        )}
       </ul>
     </div>
   );

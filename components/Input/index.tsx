@@ -8,7 +8,7 @@ type PropsType = {
   onFocus?: () => void;
   onBlur?: () => void;
   onKeyDown?: (key: string) => void;
-  inputRef?: React.Ref<HTMLInputElement>;
+  ref?: React.Ref<HTMLInputElement>;
 };
 
 const Input = forwardRef<HTMLInputElement, PropsType>(
@@ -47,7 +47,7 @@ const Input = forwardRef<HTMLInputElement, PropsType>(
 
     return (
       <input
-        ref={ref} // Attach the ref passed to the forwardRef function
+        ref={ref}
         className={styles.input}
         value={value}
         onChange={changeHandler}
